@@ -4,10 +4,15 @@ Jinja2 Documentation:    https://jinja.palletsprojects.com/
 Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
 This file creates your application.
 """
-
+import os
 from app import app
-from flask import render_template, request, redirect, url_for
-
+from flask import render_template, request, redirect, send_from_directory, url_for,flash
+from .form import PropertyForm, PType
+from werkzeug.utils import secure_filename
+from .models import PropertyFile
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate, migrate
+from . import db
 
 ###
 # Routing for your application.
@@ -23,6 +28,34 @@ def home():
 def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
+
+@app.route('/properties/create', methods=['GET','POST'])
+def create():
+    myform = PropertyForm()
+    if request.method == 'POST' and myform.validate_on_submit():
+         ptitle = myform.ptitle.data
+         rooms = myform.rooms.data
+         bathrooms = myform.bathrooms.data
+         location = myform.location.data
+         price = myform.price.data
+         descr = myform.descr.data
+         ptype = dict(PType).get(myform.ptype.data)
+
+         photo = myform.photo.data
+         filename = secure_filename(photo.filename)
+         photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename
+        ))
+         p = PropertyFile(ptitle=ptitle,rooms=rooms,bathrooms=bathrooms,location=location,price=price,descr=descr,ptype=ptype,photo=filename)
+         db.session.add(p)
+         db.session.commit()
+         flash('You have successfully filled out the form', 'success')
+         return render_template('properties.html')
+    return render_template('newproperty.html', form=myform)
+
+@app.route('/Properties/')
+def properties():
+    img_name = db.session.query(PropertyFile.photo).all()
+    return render_template('properties.html', img_name=img_name)
 
 
 ###

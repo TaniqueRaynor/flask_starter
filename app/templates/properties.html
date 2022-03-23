@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h2>Properties</h2>
+<div>
+	{% with messages = get_flashed_messages() %}
+        <p>{{ message }}</p>
+	{% endwith %}
+</div>
+<div class="view-box">
+	<div class="thumbnail">
+		{% for img in img_name %} 
+				<img class= "img-responsive" src="{{url_for('static', filename='uploads/'+ img[0])}}" alt="Cinque Terre" width="400" height="240">
+				<div class="descr-box"><p></p></div>
+				<button class="button">View Property</button>
+				<p></p>
+		{% endfor %}
+	</div>
+</div>
+
+{% endblock %}
