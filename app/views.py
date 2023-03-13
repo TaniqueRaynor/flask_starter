@@ -4,21 +4,22 @@ Jinja2 Documentation:    https://jinja.palletsprojects.com/
 Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
 This file creates your application.
 """
+
 import os
-from app import app
-from flask import render_template, request, redirect, send_from_directory, url_for,flash
-from .form import PropertyForm, PType
+from app import app,db
+from flask import render_template, request, redirect, session, url_for, flash, send_from_directory
+
+from flask import render_template, request, redirect, url_for
+from .forms import AddPropertyForm
 from werkzeug.utils import secure_filename
-from .models import PropertyFile
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate, migrate
-from . import db
+from app.model import property
+
 
 ###
 # Routing for your application.
 ###
 
-@app.route('/')
+@app.route('/home')
 def home():
     """Render website's home page."""
     return render_template('home.html')
@@ -27,42 +28,53 @@ def home():
 @app.route('/about/')
 def about():
     """Render the website's about page."""
-    return render_template('about.html', name="Mary Jane")
+    return render_template('about.html')
 
-@app.route('/properties/create', methods=['GET','POST'])
-def create():
-    myform = PropertyForm()
-    if request.method == 'POST' and myform.validate_on_submit():
-         ptitle = myform.ptitle.data
-         rooms = myform.rooms.data
-         bathrooms = myform.bathrooms.data
-         location = myform.location.data
-         price = myform.price.data
-         descr = myform.descr.data
-         ptype = dict(PType).get(myform.ptype.data)
 
-         photo = myform.photo.data
-         filename = secure_filename(photo.filename)
-         photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename
-        ))
-         p = PropertyFile(ptitle=ptitle,rooms=rooms,bathrooms=bathrooms,location=location,price=price,descr=descr,ptype=ptype,photo=filename)
-         db.session.add(p)
-         db.session.commit()
-         flash('You have successfully filled out the form', 'success')
-         return render_template('properties.html')
-    return render_template('newproperty.html', form=myform)
+@app.route('/properties/create',methods = ['POST','GET'])
+def addprop():
+    form = AddPropertyForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            property_title = form.property_title.data
+            no_of_rooms = form.no_of_rooms.data
+            no_of_bath = form.no_of_bath.data
+            location = form.location.data
+            price = form.price.data
+            property_type = form.property_type.data
+            desc = form.description.data
+            img = form.photo.data
+            imgName = secure_filename(img.filename)
+            img.save(os.path.join(app.config['UPLOAD_FOLDER'], imgName))
+            prop = property(property_title = property_title,description =desc, no_of_rooms = no_of_rooms, no_of_bath = no_of_bath,
+             price = price, property_type = property_type, location = location, photo = imgName)
+            db.session.add(prop)
+            db.session.commit()
 
-@app.route('/Properties/')
+            flash('Property has been Successfully added!!', 'success')
+
+            return redirect(url_for('properties'))
+        
+    return render_template('addprop.html',form = form)    
+
+
+@app.route('/properties')
 def properties():
-    img_name = db.session.query(PropertyFile.photo).all()
-    return render_template('properties.html', img_name=img_name)
+    prop = db.session.query(property).all()
+    return render_template('properties.html',prop = prop)
 
 
-###
-# The functions below should be applicable to all Flask apps.
-###
+@app.route('/properties/<propertyid>')
+def propid(propertyid):
+    propertyid = property.query.filter_by(property_id = int(propertyid)).first()
+    return render_template('viewproperty.html', prop = propertyid)
 
-# Display Flask WTF errors as Flash messages
+
+@app.route('/uploads/<imgname>')
+def property_photo(imgname):
+    return send_from_directory(os.path.join(os.getcwd(),app.config['UPLOAD_FOLDER']), imgname)
+
+
 def flash_errors(form):
     for field, errors in form.errors.items():
         for error in errors:

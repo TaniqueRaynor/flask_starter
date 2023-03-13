@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <div class ="single">
+        <div class = "main-card">
+            <div class = "left">
+            <img class = "left-image"src="{{ url_for('property_photo',imgname=''+prop.photo) }}">
+            </div>
+            <div class ="right">
+            <h4>{{prop.title}}</h4>
+            <div class = "pandr">
+            <p class = "price">{{prop.price}}</p>
+            <p class = "type">{{prop.r_type}}</p>
+            
+        </div>
+    </div>
+{% endblock %}

@@ -1,21 +1,26 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block main %}
-<h2>Properties</h2>
-<div>
-	{% with messages = get_flashed_messages() %}
-        <p>{{ message }}</p>
-	{% endwith %}
+<h1 style="padding-left: 8%;">Properties</h1>
+<div class = "card">
+    
+    {% for p in prop %}
+        
+            <div class =  "cards">
+                <div class = mainimg >
+                    <img src="{{ url_for('property_photo',imgname=''+p.photo) }}" >
+                </div>
+                <div class = "card-info">
+                <h4>{{p.title}}</h4>
+                <h6 class = "location"><img src = "/static/location.png" class ='pin'>      {{p.location}}</h6>
+                <p class = "price">{{p.price}}</p>
+                </div>
+                <div class = "card-btn">
+                    <a class = "property" href = "{{url_for('propid',propertyid=p.id)}}">View Property</a>
+                </div>
+                
+            </div>
+       
+    {% endfor %}
 </div>
-<div class="view-box">
-	<div class="thumbnail">
-		{% for img in img_name %} 
-				<img class= "img-responsive" src="{{url_for('static', filename='uploads/'+ img[0])}}" alt="Cinque Terre" width="400" height="240">
-				<div class="descr-box"><p></p></div>
-				<button class="button">View Property</button>
-				<p></p>
-		{% endfor %}
-	</div>
-</div>
-
 {% endblock %}
