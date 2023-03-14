@@ -7,10 +7,18 @@
             <img class = "left-image"src="{{ url_for('property_photo',imgname=''+prop.photo) }}">
             </div>
             <div class ="right">
-            <h4>{{prop.title}}</h4>
+            <h4>{{prop.property_title}}</h4>
             <div class = "pandr">
             <p class = "price">{{prop.price}}</p>
-            <p class = "type">{{prop.r_type}}</p>
+            <p class = "type">{{prop.property_type}}</p>
+            </div>
+            <div class = "">
+            <p><img src = "/static/shower.png" class ='pin'>        {{prop.no_of_bath}}</p>
+            <p><img src = "/static/bed.png" class ='pin'>       {{prop.no_of_rooms}}</p> 
+            </div>
+            <p><img src = "/static/location.png" class ='pin'>      {{prop.location}}</p> 
+            <p>{{prop.description}}</p>  
+            </div>
             
         </div>
     </div>

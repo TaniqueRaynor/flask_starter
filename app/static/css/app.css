@@ -61,40 +61,31 @@ body {
     box-shadow: 2.5px 5px 4px #888888;  
 }
 
-.pandr > *:first-child{
-    margin-right: 5%;
-}
-
 .left{
     overflow: hidden;
     display: flex;
-    min-width: 40%;
-    min-height: 100%;
+    min-width: 30%;
+    min-height: 30%;
    
     
 }
 .right{
     min-width: 60%;
-    min-height: 100%;
+    min-height: 10%;
     padding-bottom: 5%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding-left: 5%;
+    width: fit-content;
 }
 .left > img{
     
-    min-height: 100%;
-    min-width: 100%;
+    min-height: 40%;
+    min-width: 30%;
     object-fit: cover;
 
 }
-
-.right{
-    display: flex;
-    justify-content: center;
-    
-    flex-direction: column;
-    padding-left: 5%;
-}
-
-
 
 
 button{
@@ -151,6 +142,7 @@ button{
     color: white;
     padding: 0% 10% 0% 10%;
     border-radius: 25px;
+    width: fit-content;
    
 }
 .card-btn{

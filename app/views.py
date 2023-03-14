@@ -66,8 +66,8 @@ def properties():
 
 @app.route('/properties/<propertyid>')
 def propid(propertyid):
-    propertyid = property.query.filter_by(property_id = int(propertyid)).first()
-    return render_template('viewproperty.html', prop = propertyid)
+    pid = property.query.filter_by(property_id=propertyid).first()
+    return render_template('viewproperty.html', prop = pid)
 
 
 @app.route('/uploads/<imgname>')
